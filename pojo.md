@@ -177,30 +177,6 @@ public void setModel(String model) {
         this.turbo = turbo;
     }
 ```
-
-- setAll();
-```
-public void setAll(){
-        System.out.println("Introdueix el model:");
-        setModel(ent.nextLine());
-        System.out.println("Introdueix l'any del model (2000, 1999, 2022...):");
-        setAny(ent.nextInt());
-        System.out.println("Introdueix la referencia del motor:");
-        setMotor(ent.next());
-        System.out.println("Introdueix els litres del motor en format '1,0  2,0  1,5  2,5  ':");
-        setLitros(ent.next().charAt(0));
-        System.out.println("Introdueix la cilindrada del motor (2000, 1500, 1200, 3000...):");
-        setCc(ent.nextInt());
-        System.out.println("Introdueix la cantitat de cilindros del motor:");
-        setCilindros(ent.nextInt());
-        System.out.println("Introdueix els la potencia en cv del coche:");
-        setHp(ent.nextInt());
-        System.out.println("Introdueix el tipus del motor (I: en linia, V: en V, B: Boxer, H: hybrid):");
-        setTipusMotor(ent.next().charAt(0));
-        System.out.println("Introdueix true: si el motor es turboalimentat o fals: si es atmosferic");
-        setTurbo(ent.nextBoolean());
-    }
-```
 ---
 
 ### Classe InputOutput ###
@@ -208,3 +184,129 @@ public void setAll(){
 ---
 
 ### Classe Main ###
+
+- Tenim definit de forma global el Scanner y tambe l'Array de Toyota
+
+```
+public static Toyota[] models = new Toyota[20];
+    static Scanner ent = new Scanner(System.in);
+```
+
+- A continuacio la variable "func" de tipus booleana sera la que controlara el funcionament de programa fins que el vulguem finalitzar nosaltres, entrarem al bucle
+
+- i tindrem un altra variable "seleccio" que sera per opera amb el menu de seleccio
+
+```
+boolean func = true;
+        while (func){
+            System.out.println("--------TOYOTA--------\n");
+            System.out.print("Selecciona una opcio:\n" +
+                    "1- Afetgir Model\n2- Eliminar model\n3- Veure models\n4- Guardar\n5- Sortir\n\n----------------------\n");
+            int seleccio = ent.nextInt();
+
+```
+
+-Si la seleccio es 1 entrarem en la part de afetgir un nou model amb les seves caracteristiques
+-Al final farem usar un constructor amb els parametres introduit per l'usuari previament
+
+```
+ if (seleccio == 1) {
+                for (int j = 0; j < 1; j++) {
+                    System.out.println("Introdueix el model:");
+                    String model = ent.next();
+                    System.out.println("Introdueix l'any del model (2000, 1999, 2022...):");
+                    int any = Integer.parseInt(ent.next());
+                    System.out.println("Introdueix la referencia del motor:");
+                    String motor = ent.next();
+                    System.out.println("Introdueix els litres del motor en format '1,0  2,0  1,5  2,5  ':");
+                    double litros = ent.next().charAt(0);
+                    System.out.println("Introdueix la cilindrada del motor (2000, 1500, 1200, 3000...):");
+                    int cc = Integer.parseInt(ent.next());
+                    System.out.println("Introdueix la cantitat de cilindros del motor:");
+                    int cil = Integer.parseInt(ent.next());
+                    System.out.println("Introdueix els la potencia en cv del coche:");
+                    int hp = Integer.parseInt(ent.next());
+                    System.out.println("Introdueix el tipus del motor (I: en linia, V: en V, B: Boxer, H: hybrid):");
+                    char tipusmot = ent.next().charAt(0);
+                    System.out.println("Introdueix true: si el motor es turboalimentat o fals: si es atmosferic");
+                    boolean turbo = ent.nextBoolean();
+                    Toyota nou= new Toyota(model,any,motor,litros,cc,cil,hp,tipusmot,turbo);
+```
+
+- Aqui el que tenim es una part del codi que ens ordenara de forma alfabetica dins de l'Array a mesura que anem introduint models
+
+```
+                    int i = 0;
+                    for (;i < models.length &&
+                            models[i]!=null &&
+                            models[i].getModel().compareToIgnoreCase(nou.getModel())<0; i++);
+                    if (i==models.length) System.out.println("No es poden afetgir mes models");
+                    else {
+                        int k=models.length-1;
+                        for (;k < models.length-1 && i<k; k--)
+                            models[j]=models[j-1];
+                        models[i]=nou;
+                    }
+                }
+            }
+
+
+```
+
+-En el seguent cas si la seleccio es 2 sera per eliminar un model que ja estaba definit dins del Array
+
+```
+else if (seleccio == 2) {
+                int pos = 0;
+                for (int j = 0; j < models.length; j++) {
+                    if (models[j]!= null) {
+                        pos++;
+                        System.out.println(pos+"- "+models[j].mostrar());
+                    }
+                }
+                if (pos == 0) {
+                    System.out.println("No hi han models per esborrar");
+                    Main.main(args);
+                }
+                System.out.println("Escolleix la posicio del model a eliminar");
+                try  {
+                    int delete = ent.nextInt()-1;
+                    models[delete] = null;
+                }catch (ArrayIndexOutOfBoundsException e){
+                    System.out.println("No es una posicio valida");
+                }
+                pos--;
+                try  {
+                    if (pos >= 1) {
+                        pos=0;
+                        for (int i = 0; i < models.length; i++) {
+                            pos++;
+                            System.out.println(pos+"- "+models[i].mostrar());
+                        }
+                    }
+                }catch (ArrayIndexOutOfBoundsException e){
+                    System.out.println("No es una posicio valida");
+                }
+
+```
+-Hem fet utilitzar el "try catch" per evitar que siguin introduits valors no dessitjats com per exemple -1 o una possicio on hi ha un null, aixo ho controlem amb la variable "pos", de igual forma que si no hi han models guardats al array no podrem mostrar-los i ens surtira un avis
+
+```
+mostrar
+```
+
+-Amb aquesta seleccio el que farem sera guardar la informacio del nostre Array Toyota al fitxer per despres puguer accedir 
+
+```
+else if (seleccio == 4) {
+    InputOutput.write();
+}            
+```
+-Aixo simplement tanca el programa
+
+```
+else if (seleccio == 5) {
+    func = false;
+}
+```
+
