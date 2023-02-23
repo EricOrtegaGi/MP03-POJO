@@ -181,6 +181,68 @@ public void setModel(String model) {
 
 ### Classe InputOutput ###
 
+- En aquesta classe tenim dos metodes, write() i read()
+- Com els seus noms indiquen un serveix per escriure objectes dins del fitxer i l'altre per llegirlo i despres afetgir els objectes que ja tenim de volta al vector
+
+- Amb el write amb un bucle for recorrem el nostre vector y escribim els objectes dins al fitxer
+```
+public class InputOutput {
+    public static File f = new File("models.db");
+    public static void write(){
+        ObjectOutputStream w = null;
+        try {
+            w = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(f)));
+            for (int i = 0; i < models.length && models[i]!=null; i++) {
+                w.writeObject(models[i]);
+            }
+        } catch (IOException e) {
+            System.out.println("Ha iagut un problema escribint les dades ");
+            e.printStackTrace();
+        }finally {
+            try {
+                w.close();
+            } catch (IOException|NullPointerException e) {
+                System.out.println("Ha iagut un problema al tancar el programa");
+            }
+        }
+    }
+```
+
+-
+```
+    public static void read(){
+        if (f.exists()){
+            ObjectInputStream r = null;
+            try {
+                int i = 0;
+                r = new ObjectInputStream(new BufferedInputStream(new FileInputStream(f)));
+                while (true){
+                    try {
+                        while (true){
+                            Toyota model = (Toyota) r.readObject();
+                            models[i] = model;
+                            i++;
+
+                        }
+                    }catch (ClassNotFoundException | EOFException e){
+                        break;
+                    }
+                }
+            }catch (IOException ex) {
+                System.out.println("Error en obrir el fitxer");
+            }finally {
+                try {
+                    r.close();
+                }catch (IOException e) {
+                    System.out.println("Error en tancar el fitxer");
+                }
+            }
+        }
+    }
+}
+
+```
+
 ---
 
 ### Classe Main ###
@@ -206,31 +268,52 @@ boolean func = true;
 
 ```
 
--Si la seleccio es 1 entrarem en la part de afetgir un nou model amb les seves caracteristiques
--Al final farem usar un constructor amb els parametres introduit per l'usuari previament
+- Si la seleccio es 1 entrarem en la part de afetgir un nou model amb les seves caracteristiques
+- Al final farem usar un constructor amb els parametres introduit per l'usuari previament
+- tambe fem utilitzar un try-catch ja que com molts dels valors a introduir han de ser numerics, si hi ha algun error
+- oblgiarem al usuari a tornar a omplir el formulari de forma correcta advertint-lo
 
 ```
  if (seleccio == 1) {
                 for (int j = 0; j < 1; j++) {
-                    System.out.println("Introdueix el model:");
-                    String model = ent.next();
-                    System.out.println("Introdueix l'any del model (2000, 1999, 2022...):");
-                    int any = Integer.parseInt(ent.next());
-                    System.out.println("Introdueix la referencia del motor:");
-                    String motor = ent.next();
-                    System.out.println("Introdueix els litres del motor en format '1,0  2,0  1,5  2,5  ':");
-                    double litros = ent.next().charAt(0);
-                    System.out.println("Introdueix la cilindrada del motor (2000, 1500, 1200, 3000...):");
-                    int cc = Integer.parseInt(ent.next());
-                    System.out.println("Introdueix la cantitat de cilindros del motor:");
-                    int cil = Integer.parseInt(ent.next());
-                    System.out.println("Introdueix els la potencia en cv del coche:");
-                    int hp = Integer.parseInt(ent.next());
-                    System.out.println("Introdueix el tipus del motor (I: en linia, V: en V, B: Boxer, H: hybrid):");
-                    char tipusmot = ent.next().charAt(0);
-                    System.out.println("Introdueix true: si el motor es turboalimentat o fals: si es atmosferic");
-                    boolean turbo = ent.nextBoolean();
-                    Toyota nou= new Toyota(model,any,motor,litros,cc,cil,hp,tipusmot,turbo);
+                    try {
+                        System.out.println("Introdueix el model:");
+                        String model = ent.next();
+                        System.out.println("Introdueix l'any del model (2000, 1999, 2022...):");
+                        int any = Integer.parseInt(ent.next());
+                        System.out.println("Introdueix la referencia del motor:");
+                        String motor = ent.next();
+                        System.out.println("Introdueix els litres del motor en format '1,0  2,0  1,5  2,5  ':");
+                        double litros = ent.nextDouble();
+                        System.out.println("Introdueix la cilindrada del motor (2000, 1500, 1200, 3000...):");
+                        int cc = Integer.parseInt(ent.next());
+                        System.out.println("Introdueix la cantitat de cilindros del motor:");
+                        int cil = Integer.parseInt(ent.next());
+                        System.out.println("Introdueix els la potencia en cv del coche:");
+                        int hp = Integer.parseInt(ent.next());
+                        System.out.println("Introdueix el tipus del motor (I: en linia, V: en V, B: Boxer, H: hybrid):");
+                        char tipusmot = ent.next().charAt(0);
+                        System.out.println("Introdueix 1: si el motor es turboalimentat o 2: si es atmosferic");
+                        boolean turbo;
+                        if (ent.nextInt() == 1) turbo = true;
+                        else turbo = false;
+                        Toyota nou= new Toyota(model,any,motor,litros,cc,cil,hp,tipusmot,turbo);
+                        int i = 0;
+                        for (;i < models.length &&
+                                models[i]!=null &&
+                                models[i].getModel().compareToIgnoreCase(nou.getModel())<0; i++);
+                        if (i==models.length) System.out.println("No es poden afetgir mes models");
+                        else {
+                            int k=models.length-1;
+                            for (;k < models.length-1 && i<k; k--)
+                                models[j]=models[j-1];
+                            models[i]=nou;
+                        }
+                    }catch (NumberFormatException e ){
+                        System.out.println("Te que ser un valor numeric, Torna a introduir el formulari");
+                    }
+                }
+            }
 ```
 
 - Aqui el que tenim es una part del codi que ens ordenara de forma alfabetica dins de l'Array a mesura que anem introduint models
@@ -256,43 +339,16 @@ boolean func = true;
 -En el seguent cas si la seleccio es 2 sera per eliminar un model que ja estaba definit dins del Array
 
 ```
-else if (seleccio == 2) {
-                int pos = 0;
-                for (int j = 0; j < models.length; j++) {
-                    if (models[j]!= null) {
-                        pos++;
-                        System.out.println(pos+"- "+models[j].mostrar());
-                    }
-                }
-                if (pos == 0) {
-                    System.out.println("No hi han models per esborrar");
-                    Main.main(args);
-                }
-                System.out.println("Escolleix la posicio del model a eliminar");
-                try  {
-                    int delete = ent.nextInt()-1;
-                    models[delete] = null;
-                }catch (ArrayIndexOutOfBoundsException e){
-                    System.out.println("No es una posicio valida");
-                }
-                pos--;
-                try  {
-                    if (pos >= 1) {
-                        pos=0;
-                        for (int i = 0; i < models.length; i++) {
-                            pos++;
-                            System.out.println(pos+"- "+models[i].mostrar());
-                        }
-                    }
-                }catch (ArrayIndexOutOfBoundsException e){
-                    System.out.println("No es una posicio valida");
-                }
-
 ```
 -Hem fet utilitzar el "try catch" per evitar que siguin introduits valors no dessitjats com per exemple -1 o una possicio on hi ha un null, aixo ho controlem amb la variable "pos", de igual forma que si no hi han models guardats al array no podrem mostrar-los i ens surtira un avis
 
+- Si la seleccio es 3 el que fara el codi es llegir el fitxer on es guarden els objectes i despres recorrer el vector i mostrar tots els models que tenim instanciats, tindrem que guardar despres de afetgir o eliminar un model per a que la llista sigue actualitzada 
 ```
-mostrar
+else if (seleccio == 3) {
+                InputOutput.read();
+                for (int i = 0; i < models.length && models[i] != null; i++) {
+                    System.out.println(models[i].mostrar());
+                }
 ```
 
 -Amb aquesta seleccio el que farem sera guardar la informacio del nostre Array Toyota al fitxer per despres puguer accedir 
