@@ -259,13 +259,14 @@ public static Toyota[] models = new Toyota[20];
 
 ```
 InputOutput.read();
-        boolean func = true;
-        while (func){
-            System.out.println("--------TOYOTA--------\n");
-            System.out.print("Selecciona una opcio:\n" +
-                    "1- Afetgir Model\n2- Eliminar model\n3- Veure models\n4- Guardar\n5- Sortir\n\n----------------------\n");
-            int seleccio = ent.nextInt();
-
+int pos = 0;
+boolean func = true;
+try {
+ while (func) {
+  System.out.println("--------TOYOTA--------\n");
+  System.out.print("Selecciona una opcio:\n\n" +
+    "1- Afetgir Model\n2- Eliminar model\n3- Veure models\n4- Modificar model\n5- Guardar\n6- Sortir \n\n----------------------\n");
+  int seleccio = ent.nextInt();
 ```
 
 - Si la seleccio es 1 entrarem en la part de afetgir un nou model amb les seves caracteristiques
@@ -274,46 +275,47 @@ InputOutput.read();
 - oblgiarem al usuari a tornar a omplir el formulari de forma correcta advertint-lo
 
 ```
- if (seleccio == 1) {
-                for (int j = 0; j < 1; j++) {
-                    try {
-                        System.out.println("Introdueix el model:");
-                        String model = ent.next();
-                        System.out.println("Introdueix l'any del model (2000, 1999, 2022...):");
-                        int any = Integer.parseInt(ent.next());
-                        System.out.println("Introdueix la referencia del motor:");
-                        String motor = ent.next();
-                        System.out.println("Introdueix els litres del motor en format '1,0  2,0  1,5  2,5  ':");
-                        double litros = ent.nextDouble();
-                        System.out.println("Introdueix la cilindrada del motor (2000, 1500, 1200, 3000...):");
-                        int cc = Integer.parseInt(ent.next());
-                        System.out.println("Introdueix la cantitat de cilindros del motor:");
-                        int cil = Integer.parseInt(ent.next());
-                        System.out.println("Introdueix els la potencia en cv del coche:");
-                        int hp = Integer.parseInt(ent.next());
-                        System.out.println("Introdueix el tipus del motor (I: en linia, V: en V, B: Boxer, H: hybrid):");
-                        char tipusmot = ent.next().charAt(0);
-                        System.out.println("Introdueix 1: si el motor es turboalimentat o 2: si es atmosferic");
-                        boolean turbo;
-                        if (ent.nextInt() == 1) turbo = true;
-                        else turbo = false;
-                        Toyota nou= new Toyota(model,any,motor,litros,cc,cil,hp,tipusmot,turbo);
-                        int i = 0;
-                        for (;i < models.length &&
-                                models[i]!=null &&
-                                models[i].getModel().compareToIgnoreCase(nou.getModel())<0; i++);
-                        if (i==models.length) System.out.println("No es poden afetgir mes models");
-                        else {
-                            int k=models.length-1;
-                            for (;k < models.length-1 && i<k; k--)
-                                models[j]=models[j-1];
-                            models[i]=nou;
+if (seleccio == 1) {
+                    for (int i = 0; i < 1; i++) {
+                        try {
+                            System.out.println("Introdueix el model (Separacions amb guions):");
+                            String model = ent.next();
+                            System.out.println("Introdueix l'any del model (2000, 1999, 2022...):");
+                            int any = Integer.parseInt(ent.next());
+                            System.out.println("Introdueix la referencia del motor  (Separacions amb guions):");
+                            String motor = ent.next();
+                            System.out.println("Introdueix els litres del motor en format '1,0  2,0  1,5  2,5  ':");
+                            double litros = ent.nextDouble();
+                            System.out.println("Introdueix la cilindrada del motor (2000, 1500, 1200, 3000...):");
+                            int cc = Integer.parseInt(ent.next());
+                            System.out.println("Introdueix la cantitat de cilindros del motor:");
+                            int cil = Integer.parseInt(ent.next());
+                            System.out.println("Introdueix els la potencia en cv del coche:");
+                            int hp = Integer.parseInt(ent.next());
+                            System.out.println("Introdueix el tipus del motor (I: en linia, V: en V, B: Boxer, H: hybrid):");
+                            char tipusmot = ent.next().charAt(0);
+                            System.out.println("Introdueix 1: si el motor es turboalimentat o 2: si es atmosferic");
+                            boolean turbo;
+                            if (ent.nextInt() == 1) turbo = true;
+                            else turbo = false;
+                            Toyota nou = new Toyota(model, any, motor, litros, cc, cil, hp, tipusmot, turbo);
+                            int j = 0;
+                            for (; j < models.length &&
+                                    models[j] != null &&
+                                    models[j].getModel().compareToIgnoreCase(nou.getModel()) < 0; j++)
+                                ;
+                            if (j == models.length) System.out.println("No es poden afetgir mes models");
+                            else {
+                                int k = models.length - 1;
+                                for (; k < models.length && j < k; k--)
+                                    models[k] = models[k - 1];
+                                models[j] = nou;
+                            }
+                        } catch (NumberFormatException e) {
+
+                            System.out.println("Valor invalid");
                         }
-                    }catch (NumberFormatException e ){
-                        System.out.println("Te que ser un valor numeric, Torna a introduir el formulari");
                     }
-                }
-            }
 ```
 
 - Aqui el que tenim es una part del codi que ens ordenara de forma alfabetica dins de l'Array a mesura que anem introduint models
@@ -351,18 +353,105 @@ else if (seleccio == 3) {
                     System.out.println(models[i].mostrar());
                 }
 ```
-
--Amb aquesta seleccio el que farem sera guardar la informacio del nostre Array Toyota al fitxer per despres puguer accedir 
+- Si la seleccio es 4 podrem modificar algun dels objectes que l'usuari vulgue modificar amb la variable "modificar"
+- es mostra el vector i fa escollir al usuari quin model vol modificar
+- seguidament amb el getAll i setters del nostre pojo donarem la eleccio al usuari de quin parametre vol modificar
+- aixo ho tractarem amb un try-catch per evitar valors no dessitjats
 
 ```
 else if (seleccio == 4) {
-    InputOutput.write();
-}            
+                    //amb la variable modificar despres podrem canviar alguns dels parametres del objecte usan tambe els setters
+                    int modificar;
+                    pos = 0;
+                    System.out.println("Selecciona la posicio del model a modificar \n-------------------------------------------");
+                    for (int i = 0; i < models.length && models[i] != null; i++) {
+                        System.out.println(pos + ": " + models[i].mostrar());
+                        pos++;
+                    }
+                    //aqui utilitzarem un switch que tractara diferents tipus de setters dins de un try-catch per modificar el parametre dessitjat
+                    while (true) {
+                        try {
+                            modificar = ent.nextInt();
+                            System.out.println("Selecciona que vols modificar");
+                            models[modificar].getAll();
+
+                            switch (ent.nextInt()) {
+                                case 1: {
+                                    System.out.println("Model: ");
+                                    models[modificar].setModel(ent.next());
+                                    break;
+                                }
+                                case 2: {
+                                    System.out.println("Any: ");
+                                    models[modificar].setAny(Integer.parseInt(ent.next()));
+                                    break;
+                                }
+                                case 3: {
+                                    System.out.println("Motor: ");
+                                    models[modificar].setMotor(ent.next());
+                                    break;
+                                }
+                                case 4: {
+                                    System.out.println("Litres (1,5  2,0  4,9...): ");
+                                    models[modificar].setLitros(ent.nextDouble());
+                                    break;
+                                }
+                                case 5: {
+                                    System.out.println("cc: ");
+                                    models[modificar].setCc(Integer.parseInt(ent.next()));
+                                    break;
+                                }
+                                case 6: {
+                                    System.out.println("Cilindros: ");
+                                    models[modificar].setCilindros(Integer.parseInt(ent.next()));
+                                    break;
+                                }
+                                case 7: {
+                                    System.out.println("hp: ");
+                                    models[modificar].setHp(Integer.parseInt(ent.next()));
+                                    break;
+                                }
+                                case 8: {
+                                    System.out.println("Tipus Motor (I, V, B, H): ");
+                                    models[modificar].setTipusMotor(ent.next().charAt(0));
+                                    break;
+                                }
+                                case 9: {
+                                    System.out.println("1: Turboalimentat \n2: Atmosferic");
+                                    if (ent.nextInt() == 1) {
+                                        models[modificar].setTurbo(true);
+                                        break;
+                                    } else {
+                                        models[modificar].setTurbo(false);
+                                        break;
+                                    }
+                                }
+                            }
+                            models[modificar].mostrar();
+                            System.out.println("Estas d'acord amb el canvi? \n1: Guardar\n2: No guardar encara");
+                            int guardar = ent.nextInt();
+                            if (guardar == 1) {
+                                InputOutput.write();
+                                break;
+                            } else if (guardar == 2) break;
+                        } catch (IndexOutOfBoundsException | NullPointerException e) {
+                            System.out.println("Selecciona una posicio valida");
+                        }
+                    }
+
 ```
--Aixo simplement tanca el programa
+
+- Si la seleccio es 5 es guardara el vector de objectes al arxiu models.db 
 
 ```
 else if (seleccio == 5) {
+ InputOutput.write();
+}           
+```
+- Si la seleccio es 6 es tancara el programa
+
+```
+else if (seleccio == 6) {
     func = false;
 }
 ```
