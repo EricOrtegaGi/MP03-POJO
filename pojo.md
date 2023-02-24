@@ -339,9 +339,50 @@ if (seleccio == 1) {
             }
 ```
 
--En el seguent cas si la seleccio es 2 sera per eliminar un model que ja estaba definit dins del Array
+- En el seguent cas si la seleccio es 2 sera per eliminar un model que ja estaba definit dins del Array
+- La varibale delete servira per escollir el objecte del array que es vol eliminar
+- despres amb un bucle desplaçarem els seguents objectes ordenant el vector per a que no iaguen espais repetits o nulls de per mig
 
 ```
+else if (seleccio == 2) {
+                    int delete;
+                    if (models.length == 0) System.out.println("No hi han models per a eliminar");
+                    else {
+                        pos = 0;
+                        System.out.println("Selecciona la posicio del model a eliminar: \n--------------------------------------------");
+                        for (int i = 0; i < models.length && models[i] != null; i++) {
+                            System.out.println(pos + ": " + models[i].mostrar());
+                            pos++;
+                        }
+                        //Reordenem el vector al borrar el model seleccionat
+                        try {
+                            delete = ent.nextInt();
+                            for (int i = delete + 1; i < models.length && models[i] != null; i++) {
+                                models[i - 1] = models[i];
+                            }
+                            //Aqui busquem la ultima posicio no nula i la fem nula
+                            if (models[delete] != null) {
+                                for (int i = models.length - 1; i >= 0; i--) {
+                                    if (models[i] != null) {
+                                        models[i] = null;
+                                        break;
+                                    }
+                                }
+                            } else {
+                                System.out.println("No hi ha res a esborrar aqui");
+                                continue;
+                            }
+                            pos = 0;
+                            System.out.println("Llista despres de eliminar el model:");
+                            for (int i = 0; i < models.length && models[i] != null; i++) {
+                                System.out.println(pos + ": " + models[i].mostrar());
+                                pos++;
+                            }
+                            pos = 0;
+                        } catch (ArrayIndexOutOfBoundsException e) {
+                            System.out.println("No es una posicio valida");
+                        }
+                    }
 ```
 -Hem fet utilitzar el "try catch" per evitar que siguin introduits valors no dessitjats com per exemple -1 o una possicio on hi ha un null, aixo ho controlem amb la variable "pos", de igual forma que si no hi han models guardats al array no podrem mostrar-los i ens surtira un avis
 
