@@ -5,7 +5,6 @@
 ### Definicio de la classe Toyota amb els valors dels objectes ###
 
 ```
-
 public class Toyota implements Serializable {
 
     Scanner ent = new Scanner(System.in);
@@ -254,12 +253,13 @@ public static Toyota[] models = new Toyota[20];
     static Scanner ent = new Scanner(System.in);
 ```
 
+- Primer que tot tenim la funcio read(); que ens llegira l'arxiu i plenara el vector dels objectes que te guardats
 - A continuacio la variable "func" de tipus booleana sera la que controlara el funcionament de programa fins que el vulguem finalitzar nosaltres, entrarem al bucle
-
 - i tindrem un altra variable "seleccio" que sera per opera amb el menu de seleccio
 
 ```
-boolean func = true;
+InputOutput.read();
+        boolean func = true;
         while (func){
             System.out.println("--------TOYOTA--------\n");
             System.out.print("Selecciona una opcio:\n" +
@@ -319,21 +319,22 @@ boolean func = true;
 - Aqui el que tenim es una part del codi que ens ordenara de forma alfabetica dins de l'Array a mesura que anem introduint models
 
 ```
-                    int i = 0;
-                    for (;i < models.length &&
-                            models[i]!=null &&
-                            models[i].getModel().compareToIgnoreCase(nou.getModel())<0; i++);
-                    if (i==models.length) System.out.println("No es poden afetgir mes models");
-                    else {
-                        int k=models.length-1;
-                        for (;k < models.length-1 && i<k; k--)
-                            models[j]=models[j-1];
-                        models[i]=nou;
+                  int j = 0;
+                        for (;j < models.length &&
+                                models[j]!=null &&
+                                models[j].getModel().compareToIgnoreCase(nou.getModel())<0; j++);
+                        if (j==models.length) System.out.println("No es poden afetgir mes models");
+                        else {
+                            int k=models.length-1;
+                            for (;k < models.length && j<k; k--)
+                                models[k]=models[k-1];
+                            models[j]=nou;
+                        }
+                    }catch (NumberFormatException e ){
+                        System.out.println("Te que ser un valor numeric, Torna a introduir el formulari");
                     }
                 }
             }
-
-
 ```
 
 -En el seguent cas si la seleccio es 2 sera per eliminar un model que ja estaba definit dins del Array
